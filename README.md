@@ -1,6 +1,12 @@
 # Masraf 9th July(10)
 ## Overview 
+
+The MD9THJ10_db academic database project effectively models a university system by incorporating key entities such as departments, students, faculty, courses, classes, enrollments, assignments, and grades. The schema allows for comprehensive tracking of academic operations, including course offerings, student enrollment, faculty assignments, grading, and performance analysis. The SQL queries developed provide insights into departmental affiliations, course distributions, faculty qualifications, enrollment patterns, class capacities, GPA calculations, and academic honors like the Dean's List.
+
 ## Objectives 
+
+To design and implement a comprehensive student database management system for tracking academic records, enrollments, faculty information, and performance metrics to streamline institutional administration and reporting
+
 ## Creating Database 
 ``` sql
 CREATE DATABASE MD9THJ10_db;
@@ -8,7 +14,7 @@ USE MD9THJ10_db;
 ```
 ## Creating Tables
 ### Table:departments
-
+``` sql
 CREATE TABLE departments(
     dept_id     INT PRIMARY KEY AUTO_INCREMENT,
     dept_name   TEXT,
@@ -17,9 +23,9 @@ CREATE TABLE departments(
 );
 
 SELECT * FROM departments ;
-
- Table:students
-
+```
+### Table:students
+``` sql
 CREATE TABLE students(
     student_id        INT PRIMARY KEY AUTO_INCREMENT,
     first_name        TEXT,
@@ -35,9 +41,9 @@ CREATE TABLE students(
 );
 
 SELECT * FROM students ;
-
- Table:faculty
-
+```
+### Table:faculty
+``` sql
 CREATE TABLE faculty(
     faculty_id   INT PRIMARY KEY AUTO_INCREMENT,
     first_name   TEXT,
@@ -52,9 +58,9 @@ CREATE TABLE faculty(
 );
 
 SELECT * FROM faculty ;
-
- Table:courses
-
+```
+### Table:courses
+``` sql
 CREATE TABLE courses(
     course_id    INT PRIMARY KEY AUTO_INCREMENT,
     course_code  TEXT,
@@ -66,9 +72,9 @@ CREATE TABLE courses(
 );
 
 SELECT * FROM courses ;
-
- Table:classes
-
+```
+### Table:classes
+``` sql
 CREATE TABLE classes(
     class_id    INT PRIMARY KEY AUTO_INCREMENT,
     course_id   INT,
@@ -83,9 +89,9 @@ CREATE TABLE classes(
 );
 
 SELECT * FROM classes ;
-
- Table:enrollments
-
+```
+### Table:enrollments
+``` sql
 CREATE TABLE enrollments(
     enrollment_id   INT PRIMARY KEY AUTO_INCREMENT,
     student_id      INT,
@@ -97,9 +103,9 @@ CREATE TABLE enrollments(
 );
 
 SELECT * FROM enrollments ;
-
- Table:assignments
-
+```
+### Table:assignments
+``` sql
 CREATE TABLE assignments(
     assignment_id  INT PRIMARY KEY AUTO_INCREMENT,
     class_id       INT,
@@ -111,9 +117,9 @@ CREATE TABLE assignments(
 );
 
 SELECT * FROM assignments ;
-
- Table:grades
-
+```
+### Table:grades
+``` sql
 CREATE TABLE grades(
     grade_id        INT PRIMARY KEY AUTO_INCREMENT,
     enrollment_id   INT,
@@ -125,37 +131,42 @@ CREATE TABLE grades(
 );
 
 SELECT * FROM grades ;
-
+```
 ## KEY Queries 
 
--- 1-Which students belong to which departments?
+#### 1-Which students belong to which departments?
+``` sql
 SELECT 
         CONCAT(s.first_name,' ',s.last_name) AS Student_name,d.dept_name
 FROM students s 
 LEFT JOIN departments d ON d.dept_id=s.dept_id;
-
--- 2-What courses are offered by the Computer Science department?
+```
+#### 2-What courses are offered by the Computer Science department?
+``` sql
 SELECT 
                 co.course_code,co.course_name,co.credits,d.dept_name
 FROM courses co
 LEFT JOIN departments d ON d.dept_id=co.dept_id
 WHERE LOWER(d.dept_name) LIKE '%computer science%';
-
--- 3-Who are the faculty members and what are their departments and ranks?
+```
+#### 3-Who are the faculty members and what are their departments and ranks?
+``` sql
 SELECT 
         CONCAT(f.first_name,' ',f.last_name) AS Faculty_name,d.dept_name,f.ranking
 FROM faculty f
 LEFT JOIN departments d ON d.dept_id=f.dept_id;
-
--- 4-How many students are enrolled in each class?
+```
+#### 4-How many students are enrolled in each class?
+``` sql
 SELECT 
         c.class_id,co.course_code,co.course_name,COUNT(e.student_id) AS Enrolled_students
 FROM classes c 
 LEFT JOIN enrollments e ON e.class_id=c.class_id
 LEFT JOIN courses co ON co.course_id=c.course_id
 GROUP BY c.class_id,co.course_code,co.course_name;
-
--- 5-Which students are taking more than one course?
+```
+#### 5-Which students are taking more than one course?
+``` sql
 SELECT 
         CONCAT(s.first_name,' ',s.last_name) AS Student_name,
     COUNT(e.class_id) AS Total_courses 
@@ -163,8 +174,9 @@ FROM students s
 JOIN enrollments e ON e.student_id=s.student_id
 GROUP BY Student_name
 HAVING Total_courses >1;
-
--- 6-What classes are being offered and who teaches them?
+```
+#### 6-What classes are being offered and who teaches them?
+``` sql
 SELECT 
         c.class_id,co.course_code,co.course_name,
     CONCAT(f.first_name,' ',f.last_name) AS Faculty_name,
@@ -172,15 +184,17 @@ SELECT
 FROM classes c 
 LEFT JOIN faculty f ON f.faculty_id=c.faculty_id
 LEFT JOIN courses co ON co.course_id=c.course_id;
-
--- 7-What are the average scores for each assignment?
+```
+#### 7-What are the average scores for each assignment 
+``| sql
 SELECT 
         a.title,a.max_score,ROUND(AVG(g.score),2) AS Average_score
 FROM assignments a
 LEFT JOIN grades g ON g.assignment_id=a.assignment_id
 GROUP BY a.title,a.max_score;
-
--- 8-Which students scored below 80 on any assignment?
+```
+#### 8-Which students scored below 80 on any assignment?
+``` sql
 SELECT 
         s.student_id,CONCAT(s.first_name,' ',s.last_name) AS Student_name,
     a.title,a.max_score,g.score
@@ -189,8 +203,9 @@ JOIN students s ON  e.student_id=s.student_id
 JOIN grades g ON g.enrollment_id=e.enrollment_id
 JOIN assignments a ON a.class_id=e.class_id
 WHERE g.score<80.0;
-
--- 9-What are the estimated GPAs for all students?
+```
+#### 9-What are the estimated GPAs for all students?
+``` sql
 SELECT 
     s.student_id,CONCAT(s.first_name,' ',s.last_name) AS Student_name,
     ROUND(AVG(
@@ -209,29 +224,33 @@ FROM students s
 JOIN enrollments e ON s.student_id = e.student_id
 JOIN grades g ON e.enrollment_id = g.enrollment_id
 GROUP BY s.student_id, s.first_name, s.last_name;
-
--- 10-How do department budgets compare?
+```
+#### 10-How do department budgets compare?
+``` sql
 SELECT 
         *
 FROM departments
 ORDER BY budget DESC;
 
--- 11-Which faculty members earn above-average salaries?
+#### 11-Which faculty members earn above-average salaries?
+ sql
 SELECT 
         CONCAT(first_name,' ',last_name) AS Faculty_name,
     salary,ranking
 FROM faculty
 WHERE salary>(
         SELECT AVG(salary) FROM faculty);
-
--- 12-How is faculty distributed across departments and ranks?
+```
+#### 12-How is faculty distributed across departments and ranks?
+``` sql
 SELECT 
         d.dept_name,f.ranking,COUNT(*) AS Total_faculty
 FROM departments d 
 JOIN faculty f ON f.dept_id=d.dept_id
 GROUP BY d.dept_name,f.ranking;
-
--- 13-Which classes have available seats remaining?
+```
+#### 13-Which classes have available seats remaining?
+``` sql
 SELECT 
     c.class_id,co.course_name,c.capacity,
     COUNT(e.enrollment_id) AS enrolled_students,
@@ -241,8 +260,9 @@ JOIN courses co ON c.course_id = co.course_id
 LEFT JOIN enrollments e ON c.class_id = e.class_id
 GROUP BY c.class_id, co.course_name, c.capacity
 HAVING seats_remaining > 0;
-
--- 14-What are the enrollment statistics for each department?
+```
+#### 14-What are the enrollment statistics for each department?
+``` sql
 SELECT 
     d.dept_id,d.dept_name,
     COUNT(DISTINCT s.student_id) AS total_students,
@@ -252,8 +272,9 @@ FROM departments d
 JOIN students s ON d.dept_id = s.dept_id
 LEFT JOIN enrollments e ON s.student_id = e.student_id
 GROUP BY d.dept_id, d.dept_name;
-
--- 15-Which students qualify for the Dean's List (GPA > 3.5 equivalent)?
+```
+#### 15-Which students qualify for the Dean's List (GPA > 3.5 equivalent)?
+``` sql
 SELECT 
     s.student_id,CONCAT(s.first_name, ' ', s.last_name) AS student_name,
     d.dept_name AS department,ROUND(AVG(g.score), 2) AS average_score,
@@ -275,8 +296,9 @@ JOIN enrollments e ON s.student_id = e.student_id
 JOIN grades g ON e.enrollment_id = g.enrollment_id
 GROUP BY s.student_id, student_name, d.dept_name
 HAVING estimated_gpa > 3.5;
-
--- 16-Which students were admitted in the last year?
+```
+#### 16-Which students were admitted in the last year?
+``` sql
 SELECT 
     s.student_id,CONCAT(s.first_name, ' ', s.last_name) AS student_name,
     s.admission_date,d.dept_name
@@ -284,8 +306,9 @@ FROM students s
 JOIN departments d ON s.dept_id = d.dept_id
 WHERE admission_date >= DATE_SUB('2023-12-01', INTERVAL 1 YEAR);
     -- Asuming current date is '2023-12-01'. Replace it with CURDATE() to find data for any date
-
--- 17-Which faculty members were hired in the last 5 years?
+```
+#### 17-Which faculty members were hired in the last 5 years?
+``` sql
 SELECT 
     f.faculty_id,CONCAT(f.first_name,' ',f.last_name) AS Faculty_name,
     f.hire_date,f.ranking,d.dept_name
@@ -293,3 +316,7 @@ FROM faculty f
 LEFT JOIN departments d ON f.dept_id = d.dept_id
 WHERE f.hire_date >= DATE_SUB('2023-12-01', INTERVAL 5 YEAR);
     -- Asuming current date is '2023-12-01'. Replace it with CURDATE() to find data for any date
+```
+## Conclusion 
+
+The project demonstrates a solid and scalable relational database design backed by accurate and insightful analytical queries. It enables efficient data retrieval for academic decision-making and performance monitoring. The queries not only validate the integrity of the schema but also provide valuable reports for administration, academic planning, and student evaluation. This foundation can be extended further with stored procedures, views, and BI dashboards for enhanced usability and automation.
