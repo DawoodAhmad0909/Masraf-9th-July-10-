@@ -1,0 +1,5 @@
+dept_id,dept_name,building,budget
+1,"Computer Science",Engineering,1500000.00
+3,"Business Administration",Business,1200000.00
+2,Mathematics,Science,850000.00
+4,"English Literature",Humanities,650000.00

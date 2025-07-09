@@ -1,0 +1,7 @@
+class_id,course_code,course_name,Faculty_name,semester,year
+1,CS101,"Introduction to Programming","Robert Miller",Fall,2023
+2,CS201,"Data Structures","Jennifer Davis",Fall,2023
+3,MATH101,"Calculus I","Thomas Wilson",Fall,2023
+4,BUS101,"Principles of Management","Lisa Martinez",Fall,2023
+5,ENG201,"Shakespeare Studies","William Anderson",Fall,2023
+6,MATH202,"Linear Algebra","Patricia Taylor",Fall,2023

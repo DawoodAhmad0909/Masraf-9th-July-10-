@@ -1,0 +1,5 @@
+dept_id,dept_name,total_students,total_classes,total_enrollments
+1,"Computer Science",3,3,5
+2,Mathematics,1,2,2
+3,"Business Administration",1,1,1
+4,"English Literature",1,1,1

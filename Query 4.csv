@@ -1,0 +1,7 @@
+class_id,course_code,course_name,Enrolled_students
+1,CS101,"Introduction to Programming",3
+2,CS201,"Data Structures",1
+3,MATH101,"Calculus I",2
+4,BUS101,"Principles of Management",1
+5,ENG201,"Shakespeare Studies",1
+6,MATH202,"Linear Algebra",1

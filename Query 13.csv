@@ -1,0 +1,7 @@
+class_id,course_name,capacity,enrolled_students,seats_remaining
+1,"Introduction to Programming",30,3,27
+2,"Data Structures",25,1,24
+3,"Calculus I",40,2,38
+4,"Principles of Management",35,1,34
+5,"Shakespeare Studies",50,1,49
+6,"Linear Algebra",30,1,29
